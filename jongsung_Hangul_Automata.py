@@ -9,27 +9,24 @@ def hangul_combination(chosung, jungsung, jongsung):
   # ㄱ + -1 + -1 = ㄱ
   # ㄱ + ㅗ + o = 공
   # ㄱ + ㅗ + -1 = 고
-
   chosung_list = u"ㄱ,ㄲ,ㄴ,ㄷ,ㄸ,ㄹ,ㅁ,ㅂ,ㅃ,ㅅ,ㅆ,ㅇ,ㅈ,ㅉ,ㅊ,ㅋ,ㅌ,ㅍ,ㅎ".split(",")
   jungsung_list = u"ㅏ,ㅐ,ㅑ,ㅒ,ㅓ,ㅔ,ㅕ,ㅖ,ㅗ,ㅘ,ㅙ,ㅚ,ㅛ,ㅜ,ㅝ,ㅞ,ㅟ,ㅠ,ㅡ,ㅢ,ㅣ".split(",")
   jongsung_list = u"X,ㄱ,ㄲ,ㄳ,ㄴ,ㄵ,ㄶ,ㄷ,ㄹ,ㄺ,ㄻ,ㄼ,ㄽ,ㄾ,ㄿ,ㅀ,ㅁ,ㅂ,ㅄ,ㅅ,ㅆ,ㅇ,ㅈ,ㅊ,ㅋ,ㅌ,ㅍ,ㅎ".split(",")
 
   unicode_value = 0xac00
-
   if chosung != -1:
     unicode_value += 588 * chosung_list.index(chosung)
-  else:
-    if jungsung != -1:
-      return jungsung
-  
-  if jungsung == -1:
-    return chosung
-  unicode_value += 28 * jungsung_list.index(jungsung)
-  
-  if jongsung == -1:
+    if jungsung == -1:
+      return chosung
+    unicode_value += 28 * jungsung_list.index(jungsung)
+    if jongsung == -1:
+      return unichr(unicode_value)
+    unicode_value += jongsung_list.index(jongsung)
     return unichr(unicode_value)
-  unicode_value += jongsung_list.index(jongsung)
-  return unichr(unicode_value)
+
+  elif jungsung != -1:
+    return jungsung
+
 
 class Hangul_Automata(Mealy_machine.Mealy_machine):
   def __init__(self, states, inputs, transitions, actions, initial_state):
@@ -106,9 +103,8 @@ def jungsung_combination(jungsung1, jungsung2):
     else:
       print "jungsung2 not match"
       return -1
-  elif jungsung1 == u"ㅡ":
-    if jungsung2 == u"ㅣ":
-      return u"ㅢ"
+  elif jungsung1 == u"ㅡ" and jungsung2 = u"ㅣ":
+    return u"ㅢ"
   else:  
     print "jungsung combination error"
     return -1 
@@ -195,7 +191,6 @@ def f3_3(automata, input):
 
 def f4_1(automata, input):
   first_print = hangul_combination(automata.chosung, automata.jungsung, -1)
-
   automata.chosung = automata.jongsung
   automata.jungsung = input
 
@@ -203,14 +198,13 @@ def f4_1(automata, input):
   automata.jongsung = -1 
 
   second_print = hangul_combination(automata.chosung, automata.jungsung, -1)
-  print u"second_print is " + second_print
   print automata.fixed_output + first_print + second_print
   automata.fixed_output += first_print
 
 def f4_2(automata, input):
   automata.fixed_output += hangul_combination(automata.chosung, automata.jungsung, automata.jongsung)
   automata.init_chosung_jungsung_jongsung()
-
+  
   automata.chosung = input
   print automata.fixed_output + automata.chosung
 
@@ -288,19 +282,14 @@ for char in jaeum:
 
 transitions[(u"ㅗ", u"ㄱ")] = u"ㄱ"; transitions[(u"ㅗ", u"ㄴ")] = u"ㄴ"; transitions[(u"ㅗ", u"ㄹ")] = u"ㄹ"; transitions[(u"ㅗ", u"ㅂ")] = u"ㄱ"
 transitions[(u"ㅗ", u"ㄸ")] = u"중"; transitions[(u"ㅗ", u"ㅃ")] = u"중"; transitions[(u"ㅗ", u"ㅉ")] = u"중"
-
 transitions[(u"ㅜ", u"ㄱ")] = u"ㄱ"; transitions[(u"ㅜ", u"ㄴ")] = u"ㄴ"; transitions[(u"ㅜ", u"ㄹ")] = u"ㄹ"; transitions[(u"ㅜ", u"ㅂ")] = u"ㄱ"
 transitions[(u"ㅜ", u"ㄸ")] = u"중"; transitions[(u"ㅜ", u"ㅃ")] = u"중"; transitions[(u"ㅜ", u"ㅉ")] = u"중"
-
 transitions[(u"중1", u"ㄱ")] = u"ㄱ"; transitions[(u"중1", u"ㄴ")] = u"ㄴ"; transitions[(u"중1", u"ㄹ")] = u"ㄹ"; transitions[(u"중1", u"ㅂ")] = u"ㄱ"
 transitions[(u"중1", u"ㄸ")] = u"중"; transitions[(u"중1", u"ㅃ")] = u"중"; transitions[(u"중1", u"ㅉ")] = u"중"
-
 transitions[(u"중2", u"ㄱ")] = u"ㄱ"; transitions[(u"중2", u"ㄴ")] = u"ㄴ"; transitions[(u"중2", u"ㄹ")] = u"ㄹ"; transitions[(u"중2", u"ㅂ")] = u"ㄱ"
 transitions[(u"중2", u"ㄸ")] = u"중"; transitions[(u"중2", u"ㅃ")] = u"중"; transitions[(u"중2", u"ㅉ")] = u"중"
-
 transitions[(u"ㄱ", u"ㅅ")] = u"받1"
 transitions[(u"ㄴ", u"ㅈ")] = u"받1"; transitions[(u"ㄴ", u"ㅎ")] = u"받1"
-
 transitions[(u"ㄹ", u"ㄱ")] = u"받1"; transitions[(u"ㄹ", u"ㅁ")] = u"받1"; transitions[(u"ㄹ", u"ㅂ")] = u"받1"; transitions[(u"ㄹ", u"ㅅ")] = u"받1"
 transitions[(u"ㄹ", u"ㅌ")] = u"받1"; transitions[(u"ㄹ", u"ㅍ")] = u"받1"; transitions[(u"ㄹ", u"ㅎ")] = u"받1";
 
