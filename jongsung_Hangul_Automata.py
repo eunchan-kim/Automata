@@ -164,44 +164,48 @@ def jongsung_split(jongsung):
   return -1
 
 def f1_1(automata, input):
+  # ㅎ = ㅎ
   automata.chosung = input
   print automata.fixed_output + automata.chosung
 
 def f2_1(automata, input):
+  # ㅎ + ㅡ = 흐
   automata.jungsung = input
   print automata.fixed_output + hangul_combination(automata.chosung, automata.jungsung, -1)
 
 def f2_2(automata, input):
+  # 흐 + ㅣ = 희
   automata.jungsung = jungsung_combination(automata.jungsung, input)
   print automata.fixed_output + hangul_combination(automata.chosung, automata.jungsung, -1)
 
 def f3_1(automata, input):
+  # 흐 + ㄱ = 흑
   automata.jongsung = input
   print automata.fixed_output + hangul_combination(automata.chosung, automata.jungsung, automata.jongsung)
 
 def f3_2(automata, input):
+  # 흘 + ㄱ = 흙
   automata.jongsung = jongsung_combination(automata.jongsung, input)
   print automata.fixed_output + hangul_combination(automata.chosung, automata.jungsung, automata.jongsung)
 
 def f3_3(automata, input):
-  first_print = hangul_combination(automata.chosung, automata.jungsung, -1)
+  # 가 + ㄸ = 가ㄸ
+  automata.fixed_output += hangul_combination(automata.chosung, automata.jungsung, -1)
   automata.chosung = input
-  second_print = automata.chosung
-  print automata.fixed_output + first_print + second_print
+  print automata.fixed_output + automata.chosung
 
 def f4_1(automata, input):
-  first_print = hangul_combination(automata.chosung, automata.jungsung, -1)
+  # 흔 + ㅣ = 흐니
+  automata.fixed_output += hangul_combination(automata.chosung, automata.jungsung, -1)
   automata.chosung = automata.jongsung
   automata.jungsung = input
 
   # init jongsung, since jongsung became chosung  ex) 흔 + ㅣ -> 흐니
   automata.jongsung = -1 
-
-  second_print = hangul_combination(automata.chosung, automata.jungsung, -1)
-  print automata.fixed_output + first_print + second_print
-  automata.fixed_output += first_print
-
+  print automata.fixed_output + hangul_combination(automata.chosung, automata.jungsung, -1)
+  
 def f4_2(automata, input):
+  # 갑 + ㅂ = 갑ㅂ
   automata.fixed_output += hangul_combination(automata.chosung, automata.jungsung, automata.jongsung)
   automata.init_chosung_jungsung_jongsung()
 
@@ -209,20 +213,21 @@ def f4_2(automata, input):
   print automata.fixed_output + automata.chosung
 
 def f4_3(automata, input):
+  # 흙 + ㅣ = 흘기
   jongsung1 = jongsung_split(automata.jongsung)[0]
   jongsung2 = jongsung_split(automata.jongsung)[1]
 
-  first_print = hangul_combination(automata.chosung, automata.jungsung, jongsung1)
+  automata.fixed_output += hangul_combination(automata.chosung, automata.jungsung, jongsung1)
   automata.init_chosung_jungsung_jongsung()
 
   automata.chosung = jongsung2
   automata.jungsung = input
-  second_print = hangul_combination(automata.chosung, automata.jungsung, -1)
-  print automata.fixed_output + first_print + second_print
-  automata.fixed_output += first_print
+  print automata.fixed_output + hangul_combination(automata.chosung, automata.jungsung, -1)
+  
 
 
 def f4_4(automata, input):
+  # 닭 + ㄲ = 닭ㄲ
   automata.fixed_output += hangul_combination(automata.chosung, automata.jungsung, automata.jongsung)
   automata.init_chosung_jungsung_jongsung()
 
