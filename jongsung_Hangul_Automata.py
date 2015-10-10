@@ -4,6 +4,8 @@ import Mealy_machine
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+# chosung_Hangul_Automata.py
+# Eunchan Kim (pavian48@gmail.com)
 
 def hangul_combination(chosung, jungsung, jongsung):
   # ㄱ + -1 + -1 = ㄱ
@@ -180,7 +182,7 @@ def f2_2(automata, input):
 
 def f3_1(automata, input):
   # 흐 + ㄱ = 흑
-  automata.jongsung = input
+  automata.jongsung = input`
   print automata.fixed_output + hangul_combination(automata.chosung, automata.jungsung, automata.jongsung)
 
 def f3_2(automata, input):

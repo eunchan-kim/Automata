@@ -8,9 +8,9 @@ Environment:
 - python 2.7
 - mac
 
-컴퓨터 키보드를 위한 한글 오토마타입니다.
-Mealy Machine 클래스를 상속하여 Hangul_Automata 클래스를 만들었으며
-초성우선 오토마타와 종성우선 오토마타가 있습니다.
+컴퓨터 키보드를 위한 한글 오토마타입니다.<br />
+Mealy Machine 클래스를 상속하여 Hangul_Automata 클래스를 만들었으며<br />
+초성우선 오토마타와 종성우선 오토마타가 있습니다.<br />  
 
 ### 사용법
 ```sh
