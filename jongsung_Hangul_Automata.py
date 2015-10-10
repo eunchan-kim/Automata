@@ -103,7 +103,7 @@ def jungsung_combination(jungsung1, jungsung2):
     else:
       print "jungsung2 not match"
       return -1
-  elif jungsung1 == u"ㅡ" and jungsung2 = u"ㅣ":
+  elif jungsung1 == u"ㅡ" and jungsung2 == u"ㅣ":
     return u"ㅢ"
   else:  
     print "jungsung combination error"
@@ -204,7 +204,7 @@ def f4_1(automata, input):
 def f4_2(automata, input):
   automata.fixed_output += hangul_combination(automata.chosung, automata.jungsung, automata.jongsung)
   automata.init_chosung_jungsung_jongsung()
-  
+
   automata.chosung = input
   print automata.fixed_output + automata.chosung
 
