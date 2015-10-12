@@ -102,6 +102,8 @@ def jungsung_combination(jungsung1, jungsung2):
       return u"ㅝ"
     elif jungsung2 == u"ㅣ":
       return u"ㅟ"
+    elif jungsung2 == u"ㅔ":
+      return u"ㅞ"
     else:
       print "jungsung2 not match"
       return -1
@@ -273,7 +275,7 @@ for char in moeum:
   actions[(u"받2", char)] = f4_1
 
 actions[(u"ㅗ", u"ㅏ")] = f2_2; actions[(u"ㅗ", u"ㅣ")] = f2_2
-actions[(u"ㅜ", u"ㅓ")] = f2_2; actions[(u"ㅜ", u"ㅣ")] = f2_2
+actions[(u"ㅜ", u"ㅓ")] = f2_2; actions[(u"ㅜ", u"ㅔ")] = f2_2; actions[(u"ㅜ", u"ㅣ")] = f2_2
 actions[(u"중1", u"ㅣ")] = f2_2
 
 for char in jaeum:
@@ -320,6 +322,7 @@ for char in [u"중", u"ㄱ", u"ㄴ", u"ㄹ", u"받1", u"받2"]:
 
 transitions[(u"ㅗ", u"ㅏ")] = u"중1"
 transitions[(u"ㅜ", u"ㅓ")] = u"중1"
+transitions[(u"ㅜ", u"ㅔ")] = u"중2"
 transitions[(u"ㅗ", u"ㅣ")] = u"중2"; transitions[(u"ㅜ", u"ㅣ")] = u"중2"; transitions[(u"중1", u"ㅣ")] = u"중2" #-> ㅏ + ㅣ  = ㅐ 인정
 
 states = [u"초", u"중", u"ㅗ", u"ㅜ", u"중1", u"중2", u"ㄱ", u"ㄴ", u"ㄹ", u"받1", u"받2"]
