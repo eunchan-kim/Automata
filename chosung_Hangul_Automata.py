@@ -38,6 +38,7 @@ class Hangul_Automata(Mealy_machine.Mealy_machine):
     self.jungsung = -1
     self.jongsung = -1
     self.fixed_output = u""
+    self.last_print = u""
 
   def init_chosung_jungsung_jongsung(self):
     self.chosung = -1
@@ -51,6 +52,7 @@ class Hangul_Automata(Mealy_machine.Mealy_machine):
       if self.chosung2 != -1:
         self.fixed_output += hangul_combination(self.chosung, self.jungsung, self.jongsung)
         print self.fixed_output
+        self.last_print = self.fixed_output
         self.init_chosung_jungsung_jongsung()
         self.curr_state = self.initial_state
         return
@@ -62,7 +64,22 @@ class Hangul_Automata(Mealy_machine.Mealy_machine):
         self.init_chosung_jungsung_jongsung()
         self.curr_state = self.initial_state
       print self.fixed_output
+      self.last_print = self.fixed_output
       return
+
+    if input == " ":
+      if self.chosung2 != -1:
+        if self.jongsung != -1:
+          self.jongsung = jongsung_combination(self.jongsung, self.chosung2)
+        else:
+          self.jongsung = self.chosung2
+        self.fixed_output += hangul_combination(self.chosung, self.jungsung, self.jongsung)
+        self.fixed_output += " "
+        self.init_chosung_jungsung_jongsung()
+        self.curr_state = self.initial_state
+        print self.fixed_output
+        self.last_print = self.fixed_output
+        return
 
     if input in self.inputs:
       try:
@@ -101,6 +118,7 @@ class Hangul_Automata(Mealy_machine.Mealy_machine):
             self.fixed_output += hangul_combination(self.chosung, self.jungsung, self.jongsung)
           self.fixed_output += input
           print self.fixed_output
+          self.last_print = self.fixed_output
 
           self.init_chosung_jungsung_jongsung()
           self.curr_state = self.initial_state
@@ -193,22 +211,26 @@ def f1_1(automata, input):
   # ㅎ = ㅎ
   automata.chosung = input
   print automata.fixed_output + automata.chosung
+  automata.last_print = automata.fixed_output + automata.chosung
 
 def f2_1(automata, input):
   # ㅎ + ㅡ = 흐
   automata.jungsung = input
   print automata.fixed_output + hangul_combination(automata.chosung, automata.jungsung, -1)
+  automata.last_print = automata.fixed_output + hangul_combination(automata.chosung, automata.jungsung, -1)
 
 def f2_2(automata, input):
   # 흐 + ㅣ = 희
   automata.jungsung = jungsung_combination(automata.jungsung, input)
   print automata.fixed_output + hangul_combination(automata.chosung, automata.jungsung, -1)
+  automata.last_print = automata.fixed_output + hangul_combination(automata.chosung, automata.jungsung, -1)
 
 def f3_1(automata, input):
   # 흐 + ㄱ = 흐ㄱ
   first_print = hangul_combination(automata.chosung, automata.jungsung, -1)
   automata.chosung2 = input
   print automata.fixed_output + first_print + automata.chosung2
+  automata.last_print = automata.fixed_output + first_print + automata.chosung2
 
 def f3_2(automata, input):
   # 흐ㄹ + ㄱ = 흘ㄱ
@@ -217,12 +239,14 @@ def f3_2(automata, input):
   first_print = hangul_combination(automata.chosung, automata.jungsung, automata.jongsung)
   second_print = automata.chosung2
   print automata.fixed_output + first_print + second_print
+  automata.last_print = automata.fixed_output + first_print + second_print
 
 def f3_3(automata, input):
   # 가 + ㄸ = 가ㄸ
   first_print = hangul_combination(automata.chosung, automata.jungsung, -1)
   automata.chosung = input
   print automata.fixed_output + first_print + automata.chosung
+  automata.last_print = automata.fixed_output + first_print + automata.chosung
 
 def f4_1(automata, input):
   # 흐ㄴ + ㅣ = 흐니
@@ -231,6 +255,7 @@ def f4_1(automata, input):
   automata.chosung2 = -1
   automata.jungsung = input
   print automata.fixed_output + hangul_combination(automata.chosung, automata.jungsung, -1)
+  automata.last_print = automata.fixed_output + hangul_combination(automata.chosung, automata.jungsung, -1)
 
 def f4_2(automata, input):
   # 가ㅂ + ㅂ = 갑ㅂ
@@ -240,6 +265,7 @@ def f4_2(automata, input):
 
   automata.chosung = input
   print automata.fixed_output + automata.chosung
+  automata.last_print = automata.fixed_output + automata.chosung
 
 def f4_3(automata, input):
   # 흘ㄱ + ㅣ = 흘기
@@ -250,7 +276,7 @@ def f4_3(automata, input):
   automata.chosung2 = -1
 
   print automata.fixed_output + hangul_combination(automata.chosung, automata.jungsung, -1)
-
+  automata.last_print = automata.fixed_output + hangul_combination(automata.chosung, automata.jungsung, -1)
 
 def f4_4(automata, input):
   # 달ㄱ + ㄲ = 닭ㄲ
@@ -259,6 +285,7 @@ def f4_4(automata, input):
   automata.init_chosung_jungsung_jongsung()
   automata.chosung = input
   print automata.fixed_output + automata.chosung
+  automata.last_print = automata.fixed_output + automata.chosung
 
   
 jaeum = u"ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎㄲㄸㅃㅆㅉ"
@@ -356,12 +383,21 @@ HA = Hangul_Automata(states, inputs, transitions, actions, u"초")
 def main(hangul_automata):
   print u"사용법: 자음 혹은 모음을 입력한 후 엔터를 누르세요."
   print u"글자를 지우고 싶을 때는 '-'를 누르세요."
-  print u"프로그램을 종료하고 싶을 때는 'q'를 입력해주세요."
+  print u"프로그램을 종료하고 싶을 때는 '종료'를 입력해주세요."
   while(True):
     input = unicode(raw_input(u"입력값:"))
-    if input == unicode("q"):
+    if input == u"종료":
       break
     hangul_automata.simulate(input)
-  print "종료"
+  print "프로그램을 종료합니다."
+  print u"최종 결과:"
 
+  if hangul_automata.chosung2 != -1:  # ex) 하ㄱ or 달ㄱ
+    if hangul_automata.jongsung != -1:  # 달ㄱ
+      hangul_automata.jongsung = jongsung_combination(hangul_automata.jongsung, hangul_automata.chosung2)
+    else: # 하ㄱ
+      hangul_automata.jongsung = hangul_automata.chosung2
+    print hangul_automata.last_print[:-2] + hangul_combination(hangul_automata.chosung, hangul_automata.jungsung, hangul_automata.jongsung)
+  else:
+    print hangul_automata.last_print
 main(HA)
