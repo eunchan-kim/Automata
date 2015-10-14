@@ -41,33 +41,54 @@ class Hangul_Automata(Mealy_machine.Mealy_machine):
 
   def init_chosung_jungsung_jongsung(self):
     self.chosung = -1
-    self.chosung1 = -1
+    self.chosung2 = -1
     self.jungsung = -1
     self.jongsung = -1
 
   def simulate(self, input):
-    print u"input is " + input
+    if input == "-":
+      #print "backspace"
+      if self.chosung2 != -1:
+        self.fixed_output += hangul_combination(self.chosung, self.jungsung, self.jongsung)
+        print self.fixed_output
+        self.init_chosung_jungsung_jongsung()
+        self.curr_state = self.initial_state
+        return
+
+      elif (self.chosung == -1 and self.chosung2 == -1 and self.jungsung == -1 and self.jongsung == -1):
+        self.fixed_output = self.fixed_output[:-1]
+        self.curr_state = self.initial_state
+      else:
+        self.init_chosung_jungsung_jongsung()
+        self.curr_state = self.initial_state
+      print self.fixed_output
+      return
+
     if input in self.inputs:
       try:
         next_state = self.transitions[(self.curr_state, input)]
         todo = self.actions[(self.curr_state, input)]
 
+        """
         print u"next state is " + next_state
         print "action is "
         print todo
+        """
 
         todo(self, input)
         self.curr_state = next_state
 
       except KeyError:
         # go to deadstate, start again
+        """
         print "KeyError, No match found"
         print self.curr_state
         print self.chosung
         print self.chosung2
         print self.jungsung
         print self.jongsung
-        
+        """
+
         if input in jaeum:
           # think it as first input of first automata
           self.fixed_output += hangul_combination(self.chosung, self.jungsung, self.jongsung)
@@ -76,6 +97,7 @@ class Hangul_Automata(Mealy_machine.Mealy_machine):
           self.simulate(input)
         else:
           if not(self.chosung == -1 and self.chosung2 == -1 and self.jungsung == -1 and self.jongsung == -1):
+            # ex) 하 + ㅏ
             self.fixed_output += hangul_combination(self.chosung, self.jungsung, self.jongsung)
           self.fixed_output += input
           print self.fixed_output
@@ -84,7 +106,7 @@ class Hangul_Automata(Mealy_machine.Mealy_machine):
           self.curr_state = self.initial_state
 
     else:
-      print "not in self.inputs"
+      print u"올바르지 않은 입력입니다"
 
 
 def jungsung_combination(jungsung1, jungsung2):
@@ -332,9 +354,14 @@ inputs = u"ㅂ,ㅃ,ㅈ,ㅉ,ㄷ,ㄸ,ㄱ,ㄲ,ㅅ,ㅆ,ㅛ,ㅕ,ㅑ,ㅐ,ㅒ,ㅔ,ㅖ,�
 HA = Hangul_Automata(states, inputs, transitions, actions, u"초")
 
 def main(hangul_automata):
+  print u"사용법: 자음 혹은 모음을 입력한 후 엔터를 누르세요."
+  print u"글자를 지우고 싶을 때는 '-'를 누르세요."
+  print u"프로그램을 종료하고 싶을 때는 'q'를 입력해주세요."
   while(True):
-    input = unicode(raw_input("input:"))
+    input = unicode(raw_input(u"입력값:"))
+    if input == unicode("q"):
+      break
     hangul_automata.simulate(input)
-  print "end"
+  print "종료"
 
 main(HA)
